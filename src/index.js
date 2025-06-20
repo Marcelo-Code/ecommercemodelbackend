@@ -17,6 +17,10 @@ mercadopago.configure({
   access_token: process.env.MERCADOPAGO_ACCESS_TOKEN,
 });
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 app.post("/createPreference", async (req, res) => {
   try {
     const { cart, payer } = req.body;
@@ -51,6 +55,6 @@ app.post("/createPreference", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Servidor corriendo en puerto ${PORT}`);
+// });
