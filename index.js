@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import mercadopago from "mercadopago";
-import { createPurchaseOrder } from "./functions";
+import { createPurchaseOrder } from "./functions.js";
 
 dotenv.config();
 const app = express();
@@ -45,7 +45,9 @@ app.post("/createPreference", async (req, res) => {
       },
       auto_return: "approved",
       currency_id: "ARS",
-      payer: formData.buyer_email,
+      payer: {
+        email: formData.buyer_email,
+      },
       notification_url: "https://ecommercemodelbackend.vercel.app/webhook",
       metadata: {
         cart,
@@ -83,8 +85,13 @@ app.post("/webHook", async (req, res) => {
       const payment = await mercadopago.payment.findById(paymentId);
 
       if (payment.body.status === "approved") {
-        // Acá llamás a tu lógica: crear orden de compra
-        await createPurchaseOrder(cart, buyer); // reemplazalo con tu función real
+        const { cart, buyer } = payment.body.metadata;
+
+        if (!cart || !buyer) {
+          console.warn("Metadata incompleta en el pago aprobado.");
+        } else {
+          await createPurchaseOrder(cart, buyer);
+        }
       }
     }
 
