@@ -9,8 +9,13 @@ const PORT = process.env.PORT;
 const SUCCESS_BACKEND_URL = process.env.SUCCESS_BACKEND_URL;
 const FAILURE_BACKEND_URL = process.env.FAILURE_BACKEND_URL;
 const PENDING_BACKEND_URL = process.env.PENDING_BACKEND_URL;
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+  })
+);
 app.use(express.json());
 
 mercadopago.configure({
@@ -42,16 +47,22 @@ app.post("/createPreference", async (req, res) => {
       payer,
     };
 
-    console.log(preference);
-
     const response = await mercadopago.preferences.create(preference);
-    res.json({
-      init_point: response.body.init_point,
-      preference_id: response.body.id,
+
+    res.status(200).json({
+      status: "success",
+      mensaje: "Preferencia creada correctamente",
+      data: {
+        init_point: response.body.init_point,
+        preference_id: response.body.id,
+      },
     });
   } catch (error) {
-    console.log("Error al crear preferencia:", error);
-    res.status(500).json({ error: "No se pudo crear la preferencia" });
+    res.status(500).json({
+      status: "error",
+      mensaje: "No se pudo crear la preferencia",
+      data: null,
+    });
   }
 });
 
