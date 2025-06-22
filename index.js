@@ -70,6 +70,7 @@ app.post("/createPreference", async (req, res) => {
       status: "error",
       mensaje: "No se pudo crear la preferencia",
       data: null,
+      error: error.message,
     });
   }
 });
