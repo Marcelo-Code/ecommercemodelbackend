@@ -8,7 +8,7 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 export const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-export const createPurchaseOrder = async (cart, buyer) => {
+export const createPurchaseOrder = async (cart, buyer, payment_id) => {
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -29,6 +29,7 @@ export const createPurchaseOrder = async (cart, buyer) => {
         buyer_email: buyer.buyer_email,
         total_price: totalPrice,
         status: "pendiente",
+        payment_id,
       })
       .select()
       .single();

@@ -93,7 +93,8 @@ app.post("/webHook", async (req, res) => {
         if (!cart || !buyer) {
           console.warn("Metadata incompleta en el pago aprobado.");
         } else {
-          await createPurchaseOrder(cart, buyer);
+          const payment_id = payment.body.id;
+          await createPurchaseOrder(cart, buyer, payment_id);
         }
       }
     }
