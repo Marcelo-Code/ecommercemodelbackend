@@ -39,7 +39,7 @@ app.post("/createPreference", async (req, res) => {
         unit_price: item.price,
       })),
       back_urls: {
-        success: SUCCESS_BACKEND_URL,
+        success: `${SUCCESS_BACKEND_URL}/${req.body.id}`,
         failure: FAILURE_BACKEND_URL,
         pending: PENDING_BACKEND_URL,
       },
