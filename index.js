@@ -39,7 +39,7 @@ app.post("/createPreference", async (req, res) => {
         unit_price: item.price,
       })),
       back_urls: {
-        success: `${SUCCESS_BACKEND_URL}/${req.body.id}`,
+        success: SUCCESS_BACKEND_URL,
         failure: FAILURE_BACKEND_URL,
         pending: PENDING_BACKEND_URL,
       },
@@ -66,8 +66,7 @@ app.post("/createPreference", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error al crear preferencia:", error); // <-- útil para debugging
-
+    console.error("Error al crear preferencia:", error);
     res.status(500).json({
       status: "error",
       mensaje: "No se pudo crear la preferencia",
