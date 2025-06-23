@@ -105,6 +105,48 @@ app.post("/webHook", async (req, res) => {
   }
 });
 
+app.get("/getReceipt", async (req, res) => {
+  const { payment_id } = req.query;
+
+  if (!payment_id) {
+    return res.status(400).json({
+      status: "error",
+      message: "Falta el payment_id en la query",
+    });
+  }
+
+  try {
+    const payment = await mercadopago.payment.findById(payment_id);
+
+    // Opcional: podés construir un link o devolver la info entera
+    const receiptData = {
+      id: payment.body.id,
+      status: payment.body.status,
+      status_detail: payment.body.status_detail,
+      date_approved: payment.body.date_approved,
+      transaction_amount: payment.body.transaction_amount,
+      payment_method: payment.body.payment_method_id,
+      payer: payment.body.payer,
+      external_reference: payment.body.external_reference,
+      order_id: payment.body.order?.id || null,
+      receipt_url: payment.body.statement_descriptor || null, // Esto no es un link directo
+    };
+
+    res.status(200).json({
+      status: "success",
+      message: "Comprobante obtenido con éxito",
+      data: receiptData,
+    });
+  } catch (error) {
+    console.error("Error al obtener comprobante:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Error al consultar el comprobante",
+      error: error.message,
+    });
+  }
+});
+
 // app.listen(PORT, () => {
 //   console.log(`Servidor corriendo en puerto ${PORT}`);
 // });
